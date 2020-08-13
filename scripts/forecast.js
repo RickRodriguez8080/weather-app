@@ -6,7 +6,7 @@ const getCity = async (city) => {
 
     // the base is the Resource URL for the city search.  We will be adding to this
     // to create a city search
-    const base = 'http://dataservice.accuweather.com/locations/v1/cities/search';
+    const base = 'https://dataservice.accuweather.com/locations/v1/cities/search';
     
     // the query will add a few items to the base:
     //  1. a '?', which means we are going to add a query to the base url string,
@@ -28,7 +28,7 @@ const getCity = async (city) => {
 // get current conditions API code
 const currentConditions = async (cityCode) => {
 
-    const base = 'http://dataservice.accuweather.com/currentconditions/v1/';
+    const base = 'https://dataservice.accuweather.com/currentconditions/v1/';
     const query =`${cityCode}?apikey=${key}`;
 
     const response = await fetch(base + query);
