@@ -6,17 +6,15 @@ const icon = document.querySelector('.icon img');
 
 const updateUI = (data) => {
     
-    // destructuring is the same as assigning const variables,
-    // but in a shorthand way.  This only works if you are using the
-    // same variable names as those in the object you are passing into the function.
-    const {cityDetails, cityConditions} = data;
+    const cityDetails = data;
+    const Faren = Math.round(convertToF(cityDetails.main.temp));
 
     //update details in the html file
     details.innerHTML = `
-        <h5 class="my-3">${cityDetails.EnglishName}, ${cityDetails.AdministrativeArea.ID}, ${cityDetails.AdministrativeArea.CountryID}</h5>
-            <div class="my-3">${cityConditions.WeatherText}</div>
+        <h5 class="my-3">${cityDetails.name}</h5>
+            <div class="my-3">${cityDetails.weather[0].description}</div>
             <div class="display-4 my-4">
-                <span>${cityConditions.Temperature.Imperial.Value}</span>
+                <span>${Faren}</span>
                 <span>&deg;F</span>
         </div>
     `;
@@ -27,26 +25,23 @@ const updateUI = (data) => {
     }
 
     // update the day/night and icon images
-    
-    // check for day/night
-    let timeSrc = cityConditions.IsDayTime ? 'img/day.svg' : 'img/night.svg';
-    time.setAttribute('src', timeSrc);
-    
-    
+    // check for day/night  
+    let currentTime = Math.round(Date.now() / 1000);
+    if (currentTime > cityDetails.sys.sunrise && currentTime < cityDetails.sys.sunset) {
+        time.setAttribute('src', `img/day.svg`);
+    } else {
+        time.setAttribute('src', `img/night.svg`);
+    }
+
     // get correct icon for city conditions
-    icon.setAttribute('src', `img/icons/${cityConditions.WeatherIcon}.svg`);
+    icon.setAttribute('src', `img/icons/${cityDetails.weather[0].icon}.png`);
 };
 
-// the updateCity() promise function will call the forecast.js API functions to 
+// the updateCity() promise function will call the forecast.js API function(s) to 
 // return the relevant weather conditions for the user specified city
 const updateCity = async (city) => {
-    const cityDetails = await getCity(city);
-    const cityConditions = await currentConditions(cityDetails.Key);
-        
-    return {
-        cityDetails: cityDetails,
-        cityConditions: cityConditions
-    }
+    const cityDetails = await getCity(city);        
+    return cityDetails;
 };
 
 cityForm.addEventListener('submit', e => {
@@ -64,3 +59,7 @@ cityForm.addEventListener('submit', e => {
         .then(data => updateUI(data))
         .catch(error => console.log(error));
 });
+
+convertToF = (temp) => {
+    return temp * 9.0/5.0 - 459.67;
+}
