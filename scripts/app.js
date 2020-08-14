@@ -58,8 +58,20 @@ cityForm.addEventListener('submit', e => {
     updateCity(city)
         .then(data => updateUI(data))
         .catch(error => console.log(error));
+
+    // set the last city searched for to localStorage
+    localStorage.setItem('city', city);
 });
 
+// if a city exists in localStorage, update the 
+// weather conditions for it
+if(localStorage.getItem('city')) {
+    updateCity(localStorage.getItem('city'))
+    .then(data => updateUI(data))
+    .catch(error => console.log(error));
+}
+
+// convert Kelvins to Farenheit
 convertToF = (temp) => {
     return temp * 9.0/5.0 - 459.67;
 }
