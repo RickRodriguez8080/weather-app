@@ -1,3 +1,4 @@
+const forecast = new Forecast();
 const cityForm = document.querySelector('form');
 const card = document.querySelector('.card');
 const details = document.querySelector('.details');
@@ -37,13 +38,6 @@ const updateUI = (data) => {
     icon.setAttribute('src', `img/icons/${cityDetails.weather[0].icon}.png`);
 };
 
-// the updateCity() promise function will call the forecast.js API function(s) to 
-// return the relevant weather conditions for the user specified city
-const updateCity = async (city) => {
-    const cityDetails = await getCity(city);        
-    return cityDetails;
-};
-
 cityForm.addEventListener('submit', e => {
     // prevent default action
     e.preventDefault();
@@ -55,7 +49,7 @@ cityForm.addEventListener('submit', e => {
     cityForm.reset();
 
     // update the UI with the new city
-    updateCity(city)
+    forecast.updateCity(city)
         .then(data => updateUI(data))
         .catch(error => console.log(error));
 
@@ -66,7 +60,7 @@ cityForm.addEventListener('submit', e => {
 // if a city exists in localStorage, update the 
 // weather conditions for it
 if(localStorage.getItem('city')) {
-    updateCity(localStorage.getItem('city'))
+    forecast.updateCity(localStorage.getItem('city'))
     .then(data => updateUI(data))
     .catch(error => console.log(error));
 }
